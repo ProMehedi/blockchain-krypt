@@ -1,7 +1,7 @@
 import { AiFillPlayCircle } from 'react-icons/ai'
 import { SiEthereum } from 'react-icons/si'
 import { BsInfoCircle } from 'react-icons/bs'
-import Loader from './Loader'
+import { ScaleLoader } from 'react-spinners'
 
 const companyCommonStyles =
   'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
@@ -82,9 +82,14 @@ const Welcome = () => {
 
             <button
               type='submit'
-              className='text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer'
+              className='flex items-center justify-center text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer'
             >
-              Send now {false && <Loader />}
+              Send
+              {false && (
+                <span className='ml-2 -mb-1'>
+                  <ScaleLoader color='#fff' height={15} width={2} />
+                </span>
+              )}
             </button>
           </form>
         </div>
