@@ -2,6 +2,8 @@ import { AiFillPlayCircle } from 'react-icons/ai'
 import { SiEthereum } from 'react-icons/si'
 import { BsInfoCircle } from 'react-icons/bs'
 import { ScaleLoader } from 'react-spinners'
+import React from 'react'
+import { TransactionContext } from '../context/TransactionContext'
 
 const companyCommonStyles =
   'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
@@ -18,6 +20,8 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 )
 
 const Welcome = () => {
+  const { connectWallet, currentAcc } = React.useContext(TransactionContext)
+
   return (
     <div className='flex w-full justify-center items-center'>
       <div className='flex lg:flex-row flex-col items-center justify-between md:p-20 py-12 px-4'>
@@ -29,10 +33,17 @@ const Welcome = () => {
             Explore the crypto world. Buy and sell cryptocurrencies easily on
             Krypto.
           </p>
-          <button className='flex flex-row justify-center items-center text-white text-base font-semibold bg-[#2952e3] py-3 px-6 rounded-full cursor-pointer hover:bg-[#2546bd]'>
-            <AiFillPlayCircle className='mr-2' />
-            <span>Connect Wallet</span>
-          </button>
+          {!currentAcc ? (
+            <button
+              onClick={connectWallet}
+              className='flex flex-row justify-center items-center text-white text-base font-semibold bg-[#2952e3] py-3 px-6 rounded-full cursor-pointer hover:bg-[#2546bd]'
+            >
+              <AiFillPlayCircle className='mr-2' />
+              <span>Connect Wallet</span>
+            </button>
+          ) : (
+            <p>{currentAcc}</p>
+          )}
           <div className='grid sm:grid-cols-3 grid-cols-2 w-full mt-10'>
             <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
               Reliability
