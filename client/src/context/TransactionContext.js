@@ -15,15 +15,25 @@ const getEthContract = () => {
     signer
   )
 
-  console.log({ provider, signer, transactionContract })
+  return transactionContract
 }
 
 export const TransactionProvider = ({ children }) => {
+  const [loading, setLoading] = React.useState(false)
   const [currentAcc, setCurrentAcc] = React.useState('')
+  const [formData, setFormData] = React.useState({})
+  const [transactionsCount, setTransactionsCount] = React.useState(
+    localStorage.getItem('transactionsCount') || 0
+  )
 
   React.useEffect(() => {
     checkWalletConnect()
   }, [])
+
+  const handleInput = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
 
   const checkWalletConnect = async () => {
     try {
@@ -49,10 +59,55 @@ export const TransactionProvider = ({ children }) => {
     }
   }
 
-  console.log(currentAcc)
+  const sendTransaction = async () => {
+    try {
+      setLoading(true)
+      if (!ethereum) return alert('Please connect to MetaMask')
+      const transactionContract = getEthContract()
+      const parseAmount = ethers.utils.parseEther(formData.amount)
+
+      await ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: currentAcc,
+            to: contractAddress,
+            value: parseAmount._hex,
+            gas: '0x5208',
+          },
+        ],
+      })
+
+      const transactionHash = await transactionContract.addToBlockchain(
+        formData.addressTo,
+        parseAmount,
+        formData.message,
+        formData.keyword
+      )
+      await transactionHash.wait()
+
+      const transactionCount = await transactionContract.getTransactionCount()
+      localStorage.setItem('transactionsCount', transactionCount)
+      setTransactionsCount(transactionCount)
+
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.error(error)
+      throw new Error(error)
+    }
+  }
 
   return (
-    <TransactionContext.Provider value={{ connectWallet, currentAcc }}>
+    <TransactionContext.Provider
+      value={{
+        connectWallet,
+        currentAcc,
+        handleInput,
+        formData,
+        sendTransaction,
+      }}
+    >
       {children}
     </TransactionContext.Provider>
   )
