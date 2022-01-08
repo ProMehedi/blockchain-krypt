@@ -92,7 +92,7 @@ const Welcome = () => {
               </div>
               <div>
                 <p className='text-white font-light text-sm'>
-                  {shorterAddress(currentAcc)}
+                  {currentAcc ? shorterAddress(currentAcc) : '0x0'}
                 </p>
                 <p className='text-white font-semibold text-lg mt-1'>
                   Ethereum
