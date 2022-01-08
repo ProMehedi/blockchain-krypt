@@ -49,7 +49,7 @@ export const TransactionProvider = ({ children }) => {
 
         const structuredTransactions = availableTransactions.map(
           (transaction) => ({
-            addressTo: transaction.receiver,
+            addressTo: transaction.reciever,
             addressFrom: transaction.sender,
             timestamp: new Date(
               transaction.timestamp.toNumber() * 1000
