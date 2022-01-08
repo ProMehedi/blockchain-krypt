@@ -22,8 +22,14 @@ const Input = ({ placeholder, name, type, value, onChange }) => (
 )
 
 const Welcome = () => {
-  const { connectWallet, currentAcc, handleInput, formData, sendTransaction } =
-    React.useContext(TransactionContext)
+  const {
+    connectWallet,
+    currentAcc,
+    handleInput,
+    formData,
+    loading,
+    sendTransaction,
+  } = React.useContext(TransactionContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -127,10 +133,13 @@ const Welcome = () => {
 
             <button
               type='submit'
-              className='flex items-center justify-center text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer'
+              disabled={loading}
+              className={`flex items-center justify-center text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer ${
+                loading && 'opacity-50 cursor-not-allowed bg-[#3d4f7c]'
+              }`}
             >
               Send
-              {false && (
+              {loading && (
                 <span className='ml-2 -mb-1'>
                   <ScaleLoader color='#fff' height={15} width={2} />
                 </span>
