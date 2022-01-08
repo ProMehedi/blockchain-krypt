@@ -4,6 +4,7 @@ import { BsInfoCircle } from 'react-icons/bs'
 import { ScaleLoader } from 'react-spinners'
 import React from 'react'
 import { TransactionContext } from '../context/TransactionContext'
+import { shorterAddress } from '../utils/shorterAddress'
 
 const companyCommonStyles =
   'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
@@ -51,7 +52,9 @@ const Welcome = () => {
               <span>Connect Wallet</span>
             </button>
           ) : (
-            <p>{currentAcc}</p>
+            <p className='text-slate-400 font-light'>
+              Wallet Connected: {shorterAddress(currentAcc)}
+            </p>
           )}
           <div className='grid sm:grid-cols-3 grid-cols-2 w-full mt-10'>
             <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
@@ -82,8 +85,7 @@ const Welcome = () => {
               </div>
               <div>
                 <p className='text-white font-light text-sm'>
-                  {/* {shortenAddress(currentAccount)} */}
-                  address
+                  {shorterAddress(currentAcc)}
                 </p>
                 <p className='text-white font-semibold text-lg mt-1'>
                   Ethereum
