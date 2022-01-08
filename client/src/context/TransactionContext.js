@@ -140,6 +140,9 @@ export const TransactionProvider = ({ children }) => {
       const transactionCount = await transactionContract.getTransactionCount()
       setTransactionsCount(transactionCount.toString())
 
+      // Update transactions
+      getAllTransactions()
+
       setFormData({})
       setLoading(false)
     } catch (error) {
