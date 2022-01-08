@@ -29,6 +29,9 @@ export const TransactionProvider = ({ children }) => {
 
   React.useEffect(() => {
     checkWalletConnect()
+    checkIfTransactionExists()
+
+    // eslint-disable-next-line
   }, [])
 
   const handleInput = (e) => {
@@ -82,6 +85,19 @@ export const TransactionProvider = ({ children }) => {
     }
   }
 
+  const checkIfTransactionExists = async () => {
+    try {
+      if (!ethereum) return alert('Please connect to MetaMask')
+      const transactionContract = getEthContract()
+
+      const transactionCount = await transactionContract.getTransactionCount()
+      localStorage.setItem('transactionsCount', transactionCount.toString())
+    } catch (error) {
+      console.error(error)
+      throw new Error(error)
+    }
+  }
+
   const connectWallet = async () => {
     try {
       if (!ethereum) return alert('Please connect to MetaMask')
@@ -122,7 +138,6 @@ export const TransactionProvider = ({ children }) => {
       await transactionHash.wait()
 
       const transactionCount = await transactionContract.getTransactionCount()
-      localStorage.setItem('transactionsCount', transactionCount.toString())
       setTransactionsCount(transactionCount.toString())
 
       setLoading(false)
