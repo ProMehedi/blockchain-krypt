@@ -63,6 +63,7 @@ export const TransactionProvider = ({ children }) => {
     try {
       setLoading(true)
       if (!ethereum) return alert('Please connect to MetaMask')
+
       const transactionContract = getEthContract()
       const parseAmount = ethers.utils.parseEther(formData.amount)
 
@@ -71,9 +72,9 @@ export const TransactionProvider = ({ children }) => {
         params: [
           {
             from: currentAcc,
-            to: contractAddress,
-            value: parseAmount._hex,
+            to: formData.addressTo,
             gas: '0x5208',
+            value: parseAmount._hex,
           },
         ],
       })
@@ -87,8 +88,8 @@ export const TransactionProvider = ({ children }) => {
       await transactionHash.wait()
 
       const transactionCount = await transactionContract.getTransactionCount()
-      localStorage.setItem('transactionsCount', transactionCount)
-      setTransactionsCount(transactionCount)
+      localStorage.setItem('transactionsCount', transactionCount.toString())
+      setTransactionsCount(transactionCount.toString())
 
       setLoading(false)
     } catch (error) {
