@@ -22,6 +22,7 @@ export const TransactionProvider = ({ children }) => {
   const [loading, setLoading] = React.useState(false)
   const [currentAcc, setCurrentAcc] = React.useState('')
   const [formData, setFormData] = React.useState({})
+  const [transactions, setTransactions] = React.useState([])
   const [transactionsCount, setTransactionsCount] = React.useState(
     localStorage.getItem('transactionsCount') || 0
   )
@@ -35,6 +36,38 @@ export const TransactionProvider = ({ children }) => {
     setFormData({ ...formData, [name]: value })
   }
 
+  const getAllTransactions = async () => {
+    try {
+      if (ethereum) {
+        const transactionsContract = getEthContract()
+
+        const availableTransactions =
+          await transactionsContract.getAllTransactions()
+
+        const structuredTransactions = availableTransactions.map(
+          (transaction) => ({
+            addressTo: transaction.receiver,
+            addressFrom: transaction.sender,
+            timestamp: new Date(
+              transaction.timestamp.toNumber() * 1000
+            ).toLocaleString(),
+            message: transaction.message,
+            keyword: transaction.keyword,
+            amount: parseInt(transaction.amount._hex) / 10 ** 18,
+          })
+        )
+
+        console.log(structuredTransactions)
+
+        setTransactions(structuredTransactions)
+      } else {
+        console.log('Ethereum is not present')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const checkWalletConnect = async () => {
     try {
       if (!ethereum) return alert('Please connect to MetaMask')
@@ -42,6 +75,7 @@ export const TransactionProvider = ({ children }) => {
       if (!accounts || !accounts.length)
         return alert('Please connect to MetaMask')
       setCurrentAcc(accounts[0])
+      getAllTransactions()
     } catch (error) {
       console.error(error)
       throw new Error(error)
@@ -107,6 +141,7 @@ export const TransactionProvider = ({ children }) => {
         handleInput,
         formData,
         sendTransaction,
+        transactions,
       }}
     >
       {children}
